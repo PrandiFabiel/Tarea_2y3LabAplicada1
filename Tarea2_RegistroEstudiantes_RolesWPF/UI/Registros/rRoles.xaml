@@ -1,0 +1,48 @@
+﻿<Window x:Class="Tarea2_RegistroEstudiantes_RolesWPF.UI.Registros.rRoles"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tarea2_RegistroEstudiantes_RolesWPF.UI.Registros"
+        mc:Ignorable="d"
+        Title="rRoles" Height="200" Width="300">
+    <Grid>
+        <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+            
+            <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
+                <Label Content="RolId"/>
+                <TextBox x:Name="RolIdTextBox" Text="{Binding RolId}" Width="100" Height="18" Margin="50,0,0,0"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Margin="10,1,1,10">
+                <Label Content="FechaCreacion"/>
+                <DatePicker x:Name="FechaCreacionDataPicker" SelectedDate="{Binding FechaCreacion}" SelectedDateFormat="Short"  />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="10,1,1,1">
+                <Label Content="Descripcion"/>
+                <TextBox x:Name="DescripcionTextBox" Text="{Binding Descripcion}" Width="140" Height="18" Margin="15,0,0,0"/>
+            </StackPanel>
+            
+            <!--Botones-->
+            <StackPanel Orientation="Horizontal" Margin="0,15" >
+                <Button x:Name="GuardarButton"   Margin="40,0" Click="GuardarButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/Guardar.png" />
+                        <Label Content="Guardar" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="EliminarButton"  Margin="5,0" Click="EliminarButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Resources/EliminarT.png" />
+                        <Label Content="Eliminar" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+
+
+        </StackPanel>
+        
+    </Grid>
+</Window>

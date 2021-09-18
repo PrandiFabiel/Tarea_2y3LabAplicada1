@@ -48,5 +48,11 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF
             rRoles rRoles = new UI.Registros.rRoles();
             rRoles.Show();
         }
+
+        private void UsuariosMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            rUsuarios rUsuarios = new UI.Registros.rUsuarios();
+            rUsuarios.Show(); 
+        }
     }
 }

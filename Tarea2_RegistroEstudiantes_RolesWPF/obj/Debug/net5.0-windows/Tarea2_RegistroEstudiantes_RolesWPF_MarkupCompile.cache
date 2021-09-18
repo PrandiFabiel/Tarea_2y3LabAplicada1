@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 C:\Users\fabie\Documents\UCNE\Semestre 8\ProgramacionAplicada\Tareas_Laboratorio\Tarea2_RegistroEstudiantes_RolesWPF\App.xaml
-3-757410301
-
-23-1995327136
+4-201511038
+6403152151
+291892383408
 2131276541915
-MainWindow.xaml;UI\Registros\rEstudiantes.xaml;UI\Registros\rRoles.xaml;
+MainWindow.xaml;UI\Registros\rEstudiantes.xaml;UI\Registros\rRoles.xaml;UI\Registros\rUsuarios.xaml;
 
 False
 

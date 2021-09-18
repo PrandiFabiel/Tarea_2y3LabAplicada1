@@ -15,6 +15,7 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.DAL
         public DbSet<Tareas> Tareas { get; set; }
         public DbSet<Adicionales> Adicionales { get; set; }
         public DbSet<Roles> Roles { get; set; }
+        public DbSet<Usuarios> Usuarios { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

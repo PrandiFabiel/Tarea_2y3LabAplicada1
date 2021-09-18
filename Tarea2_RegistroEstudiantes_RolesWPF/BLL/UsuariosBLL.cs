@@ -7,32 +7,33 @@ using Tarea2_RegistroEstudiantes_RolesWPF.Entidades;
 using Tarea2_RegistroEstudiantes_RolesWPF.DAL;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Security.RightsManagement;
 
 namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
 {
-    public class RolesBLL
+    public class UsuariosBLL
     {
-        //Guardar un rol
-        public static bool Guardar(Roles roles)
+        //Guardando un usuario
+        public static bool Guardar(Usuarios usuario)
         {
-            if (!Existe(roles.RolId))//si no existe insertamos
-                return Insertar(roles);
+            if (!Existe(usuario.UsuarioId))
+                return Insertar(usuario);
             else
-                return Modificar(roles);
+                return Modificar(usuario);
         }
 
-
-        //insertar
-        private static bool Insertar(Roles roles)
+        //Insertar el usuario
+        private static bool Insertar(Usuarios usuario)
         {
-            bool paso = false;
             Contexto contexto = new Contexto();
+            bool guardado = false;
 
             try
             {
-                //Agregar la entidad que se desea insertar al contexto
-                contexto.Roles.Add(roles);
-                paso = contexto.SaveChanges() > 0;
+                usuario.Clave = GetSHA256(usuario.Clave);
+                if (contexto.Usuarios.Add(usuario) != null)
+                    guardado = (contexto.SaveChanges() > 0);
             }
             catch (Exception)
             {
@@ -42,22 +43,20 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
             {
                 contexto.Dispose();
             }
-
-            return paso;
+            return guardado;
         }
-
 
         //Modificar/editar
-        public static bool Modificar(Roles roles)
+        //Metodo para Modificar en la base de datos
+        private static bool Modificar(Usuarios usuario)
         {
-            bool paso = false;
             Contexto contexto = new Contexto();
-
+            bool modificado = false;
+            usuario.Clave = GetSHA256(usuario.Clave);
             try
             {
-                //marcar la entidad como modificada para que el contexto sepa como proceder
-                contexto.Entry(roles).State = EntityState.Modified;
-                paso = contexto.SaveChanges() > 0;
+                contexto.Entry(usuario).State = EntityState.Modified;
+                modificado = (contexto.SaveChanges() > 0);
             }
             catch (Exception)
             {
@@ -67,23 +66,21 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
             {
                 contexto.Dispose();
             }
-            return paso;
+            return modificado;
         }
 
-
-        //Eliminar
+        //Eliminar un usuario
         public static bool Eliminar(int id)
         {
             bool paso = false;
             Contexto contexto = new Contexto();
             try
             {
-                //buscar la entidad que se desea eliminar
-                var rol = contexto.Roles.Find(id);
+                var usuario = contexto.Usuarios.Find(id);
 
-                if (rol != null)
+                if (usuario != null)
                 {
-                    contexto.Roles.Remove(rol);//remover la entidad
+                    contexto.Usuarios.Remove(usuario);
                     paso = contexto.SaveChanges() > 0;
                 }
             }
@@ -99,8 +96,7 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
             return paso;
         }
 
-
-        //Si existe el rol que se desea agregar
+        //Para saber si un usuario existe 
         public static bool Existe(int id)
         {
             Contexto contexto = new Contexto();
@@ -108,7 +104,7 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
 
             try
             {
-                encontrado = contexto.Roles.Any(e => e.RolId == id);
+                encontrado = contexto.Usuarios.Any(e => e.UsuarioId == id);
             }
             catch (Exception)
             {
@@ -122,15 +118,41 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
             return encontrado;
         }
 
-        //Metodo para validar que no hayan descripciones iguales en el registro de roles
-        public static bool ExisteRol(string rol)
+        //Validar usuario
+        public static bool Validar(string nombre, string clave)
         {
+            bool paso = false;
             Contexto contexto = new Contexto();
-            bool encontrado = false;
 
             try
             {
-                encontrado = contexto.Roles.Any(e => e.Descripcion == rol);
+                paso = contexto.Usuarios
+                    .Any(u => u.Nombres.Equals(nombre)
+                                && u.Clave.Equals(clave)
+                          );
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                contexto.Dispose();
+            }
+
+            return paso;
+        }
+
+        public static Usuarios Buscar(int id)
+        {
+            Contexto contexto = new Contexto();
+            Usuarios usuario = new Usuarios();
+
+            try
+            {
+                usuario = contexto.Usuarios.Find(id);
+
             }
             catch (Exception)
             {
@@ -140,30 +162,20 @@ namespace Tarea2_RegistroEstudiantes_RolesWPF.BLL
             {
                 contexto.Dispose();
             }
-
-            return encontrado;
+            return usuario;
         }
 
-        //Obtener un lista de roles para cargarlas al combobox de usuarios
-        public static List<Roles> GetRoles()
+        //Metodo para encriptar la clave 
+        private static string GetSHA256(string str)
         {
-            List<Roles> lista = new List<Roles>();
-            Contexto contexto = new Contexto();
-            try
-            {
-                lista = contexto.Roles.ToList();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                contexto.Dispose();
-            }
-            return lista;
+            SHA256 sha256 = SHA256Managed.Create();
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] stream = null;
+            StringBuilder sb = new StringBuilder();
+            stream = sha256.ComputeHash(encoding.GetBytes(str));
+            for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
+            return sb.ToString();
         }
-
 
     }
 }
